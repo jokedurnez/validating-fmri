@@ -23,20 +23,11 @@ In reality, the analysis of the data is much more complex than 'comparing images
 
 ### Reading and visualising fMRI data with R/neuroconductor.
 
-
-```r
-library(ggplot2)
-ggplot(diamonds, aes(x = carat,  y = price, color = cut)) +
-    geom_point()
-```
-
-![plot of chunk unnamed-chunk-1](figure/unnamed-chunk-1-1.png)
-
 After opening RStudio, we want to set our working directory to the directory we created during set up, where we can find the data:
 
 
 ```r
-#setwd("~/Desktop/fmri-validation")
+setwd("~/Desktop/fmri-validation")
 ```
 
 Neuroconductor is an open-source platform for analysing neuroimaging (and other) data.  It hosts multiple packages to analyse data using different software.  We will mostly use its  base library `neurobase`. To install, run:
@@ -107,9 +98,12 @@ This shows some information that is stored in the "header" of the file.  For exa
 
 Another interesting function is the visualisation of nifti's:
 
-```
+
+```r
 orthographic(sub70083)
 ```
+
+![plot of chunk unnamed-chunk-6](figure/unnamed-chunk-6-1.png)
 
 Note that we only visualise one timepoint, the first one.  R will automatically show the first timepoint.
 
