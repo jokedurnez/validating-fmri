@@ -135,6 +135,7 @@ $(document).ready(function () {
 <div id="reading-and-visualising-fmri-data-with-rneuroconductor." class="section level3">
 <h3>Reading and visualising fMRI data with R/neuroconductor.</h3>
 <p>After opening RStudio, we want to set our working directory to the directory we created during set up, where we can find the data:</p>
+<pre class="r"><code>knitr::opts_knit$set(root.dir = &quot;/Users/Joke/Documents/Onderzoek/Presentations/2017_BMSANed-Leiden/shortcourse/CNP_rest/&quot;)</code></pre>
 <pre class="r"><code>setwd(&quot;~/Desktop/fmri-validation&quot;)</code></pre>
 <p>Neuroconductor is an open-source platform for analysing neuroimaging (and other) data. It hosts multiple packages to analyse data using different software. We will mostly use its base library <code>neurobase</code>. To install, run:</p>
 <pre class="r"><code>source(&quot;https://neuroconductor.org/neurocLite.R&quot;)
@@ -143,8 +144,8 @@ neuro_install(&quot;neurobase&quot;, release = &quot;stable&quot;)</code></pre>
 <pre class="r"><code>library(neurobase)</code></pre>
 <pre><code>## Loading required package: oro.nifti</code></pre>
 <pre><code>## oro.nifti 0.8.1</code></pre>
-<pre class="r"><code>basedir = &quot;/Users/Joke/Documents/Onderzoek/Presentations/2017_BMSANed-Leiden/shortcourse/CNP_rest/&quot;
-sub70083 &lt;- readnii(paste0(basedir,&quot;sub-10159_task-rest_bold_space-MNI152NLin2009cAsym_preproc.nii.gz&quot;))</code></pre>
+<pre class="r"><code>basedir = 
+sub70083 &lt;- readnii(&quot;sub-10159_task-rest_bold_space-MNI152NLin2009cAsym_preproc.nii.gz&quot;)</code></pre>
 <p>The function <code>readnii</code> requires one argument: the name of the file we want to read. This needs to be character string, which is why we put it in quotes. We saved the data to the variable <code>sub70083</code>. What comes out is an object of type <code>oro.nifti</code>. Essentially, it is a 4D array, with extra metadata specific to fMRI data. We can therefore apply functions that we can apply to <code>arrays</code>. Let’s look for example at the shape of our data.</p>
 <pre class="r"><code>dim(sub70083)</code></pre>
 <pre><code>## [1]  65  77  49 152</code></pre>

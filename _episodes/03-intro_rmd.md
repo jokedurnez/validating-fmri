@@ -13,6 +13,7 @@ MRI is an imaging technique, with which we can take scans of muscles, bones, bra
 
 Imagine a subject listening to broadband noise for 15 seconds, and then listening to silence for 15 seconds, and repeat this for 10 times while taking brain scans every 3 seconds.  Afterwards, we can compare the scans during silence with the scans during music, and end up with an image like the following from [Okada et al., 2013](http://journals.plos.org/plosone/article?id=10.1371/journal.pone.0068959).  The brain image in the back is a structural MRI, the red blobs are the parts of the brain that show a significant difference between the two conditions.
 
+
 ![fmrifig](../fig/auditory.png)
 
 In reality, the analysis of the data is much more complex than 'comparing images from two conditions' and there exist thousands of ways to analyse the data.  During this lesson, we will touch a few very basic methods, but a more thorough discussion is outside the scope.  We will assume that all the data is preprocessed, which means that:
@@ -24,6 +25,10 @@ In reality, the analysis of the data is much more complex than 'comparing images
 ### Reading and visualising fMRI data with R/neuroconductor.
 
 After opening RStudio, we want to set our working directory to the directory we created during set up, where we can find the data:
+
+```r
+knitr::opts_knit$set(root.dir = "/Users/Joke/Documents/Onderzoek/Presentations/2017_BMSANed-Leiden/shortcourse/CNP_rest/")
+```
 
 
 ```r
@@ -55,8 +60,8 @@ library(neurobase)
 ```
 
 ```r
-basedir = "/Users/Joke/Documents/Onderzoek/Presentations/2017_BMSANed-Leiden/shortcourse/CNP_rest/"
-sub70083 <- readnii(paste0(basedir,"sub-10159_task-rest_bold_space-MNI152NLin2009cAsym_preproc.nii.gz"))
+basedir =
+sub70083 <- readnii("sub-10159_task-rest_bold_space-MNI152NLin2009cAsym_preproc.nii.gz")
 ```
 
 The function `readnii` requires one argument: the name of the file we want to read.  This needs to be character string, which is why we put it in quotes.  We saved the data to the variable `sub70083`.  What comes out is an object of type `oro.nifti`.  Essentially, it is a 4D array, with extra metadata specific to fMRI data.  We can therefore apply functions that we can apply to `arrays`.  Let's look for example at the shape of our data.
