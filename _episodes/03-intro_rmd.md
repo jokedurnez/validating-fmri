@@ -27,8 +27,10 @@ In reality, the analysis of the data is much more complex than 'comparing images
 After opening RStudio, we want to set our working directory to the directory we created during set up, where we can find the data:
 
 ```r
-knitr::opts_knit$set(root.dir = "/Users/Joke/Documents/Onderzoek/Presentations/2017_BMSANed-Leiden/shortcourse/CNP_rest/")
+knitr::opts_knit$set(root.dir = '/Users/Joke/Documents/Onderzoek/Presentations/2017_BMSANed-Leiden/shortcourse/CNP_rest')
 ```
+
+
 
 
 ```r
@@ -60,7 +62,6 @@ library(neurobase)
 ```
 
 ```r
-basedir =
 sub70083 <- readnii("sub-10159_task-rest_bold_space-MNI152NLin2009cAsym_preproc.nii.gz")
 ```
 
