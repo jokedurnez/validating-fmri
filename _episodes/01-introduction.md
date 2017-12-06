@@ -10,6 +10,7 @@ keypoints:
 - "fMRI"
 ---
 
+
 ### Recap: what is fMRI?
 
 MRI is an imaging technique, with which we can take scans of muscles, bones, brains,... fMRI is when we repeatedly take MRI scans of the brain.  This allows us to see the brain _in action_ when it's performing tasks etc.
@@ -44,6 +45,7 @@ neuro_install("neurobase", release = "stable")
 The data is located in the directory `data` in the working directory.  Now we can load the data into R using the function `readnii`.
 
 ~~~
+library(neurobase)
 sub70083 <- readnii("sub-70083_task-rest_bold_space-MNI152NLin2009cAsym_preproc.nii.gz")
 ~~~
 {: .r}
@@ -85,16 +87,12 @@ NIfTI-1 format
 
 This shows some information that is stored in the "header" of the file.  For example, it tells us the pixel dimensions.  The first three numbers tell us the size of the voxels in space: 3 x 3 x 4 cm.  The last number tells us the dimension in time: a scan was taken every 2 seconds.
 
-Another interesting function is the visualisation of nifti's:
+Another interesting function is the visualisation of nifti's.  Note that we only visualise one timepoint, the first one.  R will automatically show the first timepoint.
 
 ~~~
 orthographic(sub70083)
 ~~~
 {: .r}
-
-Note that we only visualise one timepoint, the first one.  R will automatically show the first timepoint.
-
-This is what you should see:
 
 ![fmrifig]({{ page.root }}/fig/orthographic_fmri.jpeg){:width="50%"}
 
