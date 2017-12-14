@@ -4,10 +4,13 @@ teaching: 15
 exercises: 15
 questions:
 - "What is fMRI?"
+- "How can I read fMRI data in R?"
+- "How can I visualise fMRI data with R?"
 objectives:
 - "Have a basic understanding of where the data comes from."
 keypoints:
-- "fMRI"
+- "fMRI data is a time series of 3D images of the brain."
+- "Visualising and manipulating fMRI nifti images can be done with neurobase."
 ---
 
 
@@ -93,7 +96,6 @@ Another interesting function is the visualisation of nifti's.  Note that we only
 orthographic(sub70083)
 ~~~
 {: .r}
-
 ![fmrifig]({{ page.root }}/fig/orthographic_fmri.jpeg){:width="50%"}
 
 
@@ -108,6 +110,8 @@ You will see that there are many more arguments that can be passed to the functi
 orthographic(sub70083,xyz=c(20,20,30))
 ~~~
 {: .r}
+![fmrifig]({{ page.root }}/fig/orthographic_fmri.jpeg){:width="50%"}
+
 
 To look at the `value` of one specific point in time and space, we can use indexes.  Remember our cross-hair in the figure was at the first timepoint at coordinates (20,20,30).  
 The following example shows the exact value of this point in the figure at the first timepoint.

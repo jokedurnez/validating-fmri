@@ -13,3 +13,4 @@ You need to download some files to folow this lesson:
 1. Download [this data](notavail) and move the file to this folder.
 2. Unzip/extract the file.  You should end  up with a new folder called data.
 3. Open a terminal and type cd, then press the Ender key.  The last step will make sure you start with your home folder as your working directory.
+4. We will work with the MSDL atlas available here wit this reference [TODO] https://team.inria.fr/parietal/files/2015/01/MSDL_rois.zip
