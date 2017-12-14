@@ -16,8 +16,85 @@ keypoints:
 
 ### Recap: what is functional connectivity?
 
-We measure the brain as a 3D grid with thousands and thousands of voxels.  However, there is a logical coherence between parts of the brain.  One domain of research is figuring out which are the regions of the brain, and what are its borders.  But there are certain atlases that seem reproducible and
+Before, we've worked with brain scans of subjects while they are performing specific tasks.  However, another field of research within neuroimaging is about what the brain does during rest.  It has been shown to be a valuable source to figure out how the brain is logically organised, and how the parts of the brain communicate with each other.
 
-MRI is an imaging technique, with which we can take scans of muscles, bones, brains,... fMRI is when we repeatedly take MRI scans of the brain.  This allows us to see the brain _in action_ when it's performing tasks etc.
+One interesting line of research is about creating atlases, where the brain is divided into different parts, for example using unsupervised learning (for example principle components analysis).  Another research is about finding the *'functional'* connections between those parts, for example by looking at the correlations between the average signal in those brain parcels.
 
-Imagine a subject listening to broadband noise for 15 seconds, and then listening to silence for 15 seconds, and repeat this for 10 times while taking brain scans every 3 seconds.  Afterwards, we can compare the scans during silence with the scans during music, and end up with an image like the following from [Okada et al., 2013](http://journals.plos.org/plosone/article?id=10.1371/journal.pone.0068959).  The brain image in the back is a structural MRI, the red blobs are the parts of the brain that show a significant difference between the two conditions.
+### Extracting time series data
+
+Let's look at the anatomical data for our first subject.
+~~~
+sub10159_anat <- readnii("CNP_rest/sub-10159_T1w_space-MNI152NLin2009cAsym_preproc_reduced.nii.gz")
+ortho2(sub10159_anat)
+~~~
+
+And this is an atlas.  Note that this is not the original atlas, but a low-resolution version to work with in this course.  If you want the original atlas: https://team.inria.fr/parietal/18-2/spatial_patterns/spatial-patterns-in-resting-state/
+~~~
+atlas <- readnii("MSDL_rois/msdl_rois_reduced_reshaped.nii")
+ortho2(atlas)
+~~~
+
+With a few extra plotting functions using colorbrewer and the `scales` library, we can create a cool overlay of the atlas on the anatomical scan:
+~~~
+library(RColorBrewer)
+library(scales)
+rf <- colorRampPalette(rev(brewer.pal(11,'Spectral')))
+cols <- rf(39)
+
+ortho2(sub10159_anat,atlas,col.y=alpha(sample(cols),0.5))
+~~~
+
+Now we want to extract a certain brain region, for example BROCA from the resting state data.
+~~~
+sub10159 <- readnii("CNP_rest/sub-10159_task-rest_bold_space-MNI152NLin2009cAsym_preproc.nii.gz")
+broca_mask = array(rep(broca,152),dim=c(65,77,49,152))
+broca_ts = apply(sub10159*broca_mask,4,sum)
+plot(broca_ts,type='l')
+~~~
+
+Let's write a function to do this:
+~~~
+extract_signal <- function(data,mask){
+  expand_mask <- array(rep(mask,152),dim=c(65,77,152))
+  data_masked <- data*expand_mask
+  timeseries <- apply(data_masked,4,sum)
+}
+~~~
+
+~~~
+laud_ts <- extract_signal(sub10159,atlas,1)
+plot(laud_ts,type="l")
+raud_ts <- extract_signal(sub10159,atlas,2)
+lines(raud_ts,col=2)
+~~~
+
+~~~
+library(lattice)
+together = matrix(c(broca_ts,laud_ts,raud_ts),byrow=TRUE,nrow=3)
+correlations = cor(t(together))
+levelplot(correlations)
+estimate <- partial.cor(t(together),tests=TRUE)
+levelplot(estimate$R)
+~~~
+
+
+~~~
+confounders <- read.table("CNP_rest/sub-10159_task-rest_bold_confounds.tsv",skip=2)
+fd <- confounders$V6
+fd <- (fd-mean(fd))/sd(fd,)
+fd <- c(0,fd)
+lines(fd,col=3,lwd=3)
+~~~
+
+> ## Exercises
+> Can you extract the timeseries in subject 10365 for the different parts of the DMN. The atlas labels are: (4, Left DMN); (5, Median DMN); (6, Frontal DMN); (7, Right DMN)?
+> Also try the following:
+> - plot the time series together with the framewise displacement
+> - what are the correlations
+> - what happens if you add the motion to the time series when computing the partial correlations?
+> **Advanced**
+> - Can you regress out the motion from the time series?
+> - Can you regress out all motion parameters from the time series?
+> - What happens with the correlations?
+> - Can you extract (using a loop) the time series for all parts of the atlas?
+> - Plot the correlation matrix and the partial correlation matrix.
