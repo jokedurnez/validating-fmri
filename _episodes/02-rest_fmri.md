@@ -1,7 +1,7 @@
 ---
 title: "Computing functional connectivity."
 teaching: 20
-exercises: 10
+exercises: 20
 questions:
 - "What is functional connectivity?"
 - "How can I compute functional connectivity between regions with R?"
@@ -9,6 +9,7 @@ objectives:
 - "Being able to extract time series from an atlas."
 keypoints:
 - "Using an atlas, we can extract time series data from a resting state fMRI."
+- "Using those time series, we can estimate the functional connectivity (correlation) between parts of the brain."
 ---
 
 ### Recap: what is functional connectivity?
@@ -46,8 +47,6 @@ ortho2(atlas)
 
 With a few extra plotting functions using colorbrewer and the `scales` library, we can create a cool overlay of the atlas on the anatomical scan:
 ~~~
-library(RColorBrewer)
-library(scales)
 rf <- colorRampPalette(rev(brewer.pal(11,'Spectral')))
 cols <- rf(39)
 
@@ -59,15 +58,14 @@ ortho2(sub10159_anat,atlas,col.y=alpha(sample(cols),0.5))
 Now we want to extract a certain brain region, for example BROCA from the resting state data.
 ~~~
 broca <- ifelse(atlas==29,1,0)
-ortho2(sub10159_anat,broca,col.y=alpha(sample(cols),0.5))
+ortho2(sub10159_anat,broca,xyz=c(20,50,19))
 ~~~
 {: .r}
-![fmrifig]({{ page.root }}/fig/2_broca_location.jpg){:width="70%"}
+![fmrifig]({{ page.root }}/fig/2_broca.jpg){:width="70%"}
 
 ~~~
-sub10159 <- readnii("sub-10159/sub-10159_task-rest_bold_space-MNI152NLin2009cAsym_preproc.nii.gz")
 broca_mask <- array(rep(broca,152),dim=c(65,77,49,152))
-broca_ts <- apply(sub10159*broca_mask,4,sum)
+broca_ts <- apply(data*broca_mask,4,sum)
 plot(broca_ts,type='l')
 ~~~
 {: .r}
@@ -87,19 +85,19 @@ extract_signal <- function(data,atlas,mask_id){
 {: .r}
 
 ~~~
-laud_ts <- extract_signal(sub10159,atlas,1)
+laud_ts <- extract_signal(data,atlas,1)
 plot(laud_ts,type="l")
-raud_ts <- extract_signal(sub10159,atlas,2)
+raud_ts <- extract_signal(data,atlas,2)
 lines(raud_ts,col=2)
 ~~~
 {: .r}
 ![fmrifig]({{ page.root }}/fig/2_auditory.jpg){:width="70%"}
 
 ~~~
-together = matrix(c(broca_ts,laud_ts,raud_ts),byrow=TRUE,nrow=3)
-correlations = cor(t(together))
+together = matrix(c(broca_ts,laud_ts,raud_ts),ncol=3)
+correlations = cor(together)
 levelplot(correlations)
-estimate <- partial.cor(t(together),tests=TRUE)
+estimate <- partial.cor(together,tests=TRUE)
 levelplot(estimate$R)
 ~~~
 {: .r}
@@ -110,11 +108,13 @@ levelplot(estimate$R)
 ~~~
 confounders <- read.table("sub-10159/sub-10159_task-rest_bold_confounds.tsv",skip=2)
 fd <- confounders$V6
-fd <- (fd-mean(fd))/sd(fd,)
+fd <- (fd-mean(fd))/sd(fd)
+# there is no value for the fd on the first timepoint --> set to 0
 fd <- c(0,fd)
 plot(laud_ts,type="l")
 lines(raud_ts,col=2)
 lines(fd,col=3,lwd=3)
+legend(-1.5,c("L Aud","R Aud","FD"),col=1:3,lty=1,cex=0.5)
 ~~~
 {: .r}
 ![fmrifig]({{ page.root }}/fig/2_motion.jpg){:width="70%"}

@@ -108,7 +108,7 @@ out
 
 The p-values are strings and have `"<.0001"`, so we need to clean that a bit.
 ~~~
-out <- ifelse(out=="<.0001",0,out)
+out <- ifelse(out=="<.0001",0.0001,out)
 class(out) <- "numeric"
 levelplot(out,col.regions = heat.colors(100))
 ~~~

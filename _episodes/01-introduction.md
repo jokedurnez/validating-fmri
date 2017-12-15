@@ -33,7 +33,7 @@ In reality, the analysis of the data is much more complex than 'comparing images
 After opening RStudio, we want to set our working directory to the directory we created during set up, where we can find the data:
 
 ~~~
-setwd("~/Desktop/validating-fmri")
+setwd("~/Desktop/validating-fmri/data")
 ~~~
 {: .r}
 

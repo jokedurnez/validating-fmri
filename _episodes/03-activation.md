@@ -1,18 +1,20 @@
 ---
 title: "Using real data to validate task fMRI."
 teaching: 20
-exercises: 0
+exercises: 20
 questions:
-- "How do we usually assess whether a part in the brain is active during task fMRI?"
 - "What's with that Eklund paper?"
+- "How do we usually assess whether a part in the brain is active during task fMRI?"
 - "How do we create a random regressor?"
 objectives:
-- "Do a simulation that is somewhat similar to what Eklund did."
+- "Understand how Eklund defines the null hypothesis for fMRI."
+- "Do a simulation that is somewhat similar to what Eklund did, on the parcel level."
 keypoints:
 - "It can be very insightful to use resting data to validate task methods."
 ---
 
 ### The Eklund paper
+Last year, Anders Eklund published a paper validating cluster inference.  He found that the false positive rate is **much** higher than the nominal level.  His really cool approach was to 'pretend' the resting state data is in fact coming from a task experiment with a random design matrix.  Given that the participants (and the experimentors) were unaware of the task, the null hypothesis should be true.
 
 ### Loading the necessary libraries
 library(neuRosim)
@@ -42,7 +44,11 @@ plot(s,type='l')
 {: .r}
 ![fmrifig]({{ page.root }}/fig/4_design_convolved.jpg){:width="40%"}
 
-If we would now estimate whether a voxel is _significantly_ related to the task, we would regress the signal on the design matrix. We have worked with the resting state data.  If we now randomly create a regressor, we can assume the null hypothesis: there is no relationship between the task design and the signal.  In the data folder, there is a map that contains all the extracted time series (with the atlas used before) for each subject's resting state data.  Let's look at one subject.
+If we would now estimate whether a voxel is _significantly_ related to the task, we would regress the signal from a resting state dataset onto this design matrix. If we do that, we can assume the null hypothesis: any relation between the design and the signal is by chance.  
+
+Ideally, we would now do this for all voxels, but for computational reasons, we'll focus on parcels (1000's of voxels vs 39 parcels).
+Ideally, we would now extract the time series ourselves, but of or computational reasons, the time series are already extracted in the data folder (`CNP_ts/`).
+Let's look at one subject.
 
 ~~~
 datdir <- 'CNP_ts/'
@@ -76,6 +82,7 @@ V37        V38        V39
 
 ~~~
 plot(timeseries$V1,type="l")
+lines(s,col=2)
 ~~~
 {: .r}
 ![fmrifig]({{ page.root }}/fig/4_V1.jpg){:width="40%"}
@@ -164,3 +171,11 @@ lines(x,y)
 ~~~
 {: .r}
 ![fmrifig]({{ page.root }}/fig/4_distribution.jpg){:width="40%"}
+
+> ## Exercises
+> - What happens when you choose a more random design (onsets not evenly spaced)?
+> - Do you observe the same pattern in another?
+> - Can you make a loop (around the loop) that saves the false positive rate for all parcels.
+>
+>   **hint:** with `paste0("V",j,"~design")`, you can make the model specification dependent on an index j.
+{: .challenge}
